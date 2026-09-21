@@ -1,6 +1,6 @@
 // src/pages/InvoicesPage.jsx
 import React, { useState } from 'react';
-import InvoiceTable from '../components/erp/InvoiceTable';
+import InvoiceTable from '../components/erp/invoiceTable';
 import InvoiceModalForm from '../components/erp/InvoiceFormModal';
 import InvoicePrint from '../components/erp/InvoicePrint';
 
