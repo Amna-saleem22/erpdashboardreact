@@ -1,42 +1,59 @@
 // src/pages/InvoicesPage.jsx
 import React, { useState } from 'react';
-import InvoiceTable from '../components/erp/invoiceTable';
+import InvoiceTable from '../components/erp/InvoiceTable';
 import InvoiceModalForm from '../components/erp/InvoiceFormModal';
 import InvoicePrint from '../components/erp/InvoicePrint';
+import { Heading, Text, Button, Card } from '../components/ui/Index';
 
 const InvoicesPage = () => {
   // Modal states for New Invoice and Print View
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedInvoiceForPrint, setSelectedInvoiceForPrint] = useState(null);
 
+  const handleAddInvoice = (newInvoice) => {
+    console.log("New Invoice Added:", newInvoice);
+    setIsFormOpen(false);
+  };
+
   return (
-    <div className="p-6 bg-slate-900 min-h-screen font-sans">
-      {/* Top Header & Primary Action Button */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    <div className="p-4 md:p-6 bg-slate-50 min-h-screen font-sans space-y-6">
+      
+      {/* Header & Main Primary Action Button */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-amber-400">Invoice Management</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <Heading level="h1">Invoice Management</Heading>
+          <Text variant="sm" className="text-slate-500 mt-1">
             View, search, filter, and manage Purchase and Sale book registers.
-          </p>
+          </Text>
         </div>
 
-       
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="primary" 
+            onClick={() => setIsFormOpen(true)}
+          >
+            + Create Invoice
+          </Button>
+        </div>
       </div>
 
-      {/* Main Invoice Table Component (Includes FilterBar and Actions) */}
-      <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 shadow-xl">
-        <InvoiceTable onPrintInvoice={(invoice) => setSelectedInvoiceForPrint(invoice)} />
-      </div>
+      {/* Main Table Card Wrapper */}
+      <Card className="bg-white border-slate-200/80 p-5 shadow-xs">
+        <InvoiceTable 
+          onPrintInvoice={(invoice) => setSelectedInvoiceForPrint(invoice)} 
+        />
+      </Card>
 
-      {/* Reusable Form Modal */}
+      {/* Invoice Form Modal */}
       {isFormOpen && (
         <InvoiceModalForm
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
+          onAddInvoice={handleAddInvoice}
         />
       )}
 
-      {/* Reusable Print Preview Modal */}
+      {/* Print Preview Modal */}
       {selectedInvoiceForPrint && (
         <InvoicePrint
           invoice={selectedInvoiceForPrint}

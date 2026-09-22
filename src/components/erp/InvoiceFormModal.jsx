@@ -124,17 +124,17 @@ const InvoiceModalForm = ({ isOpen, onClose, onAddInvoice }) => {
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-3 border-t border-slate-800 pt-4 mt-6">
+          <div 
+         
+         >   
             <button
               type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700"
-            >
+              onClick={onClose}>
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-semibold bg-amber-500 text-slate-950 rounded-lg hover:bg-amber-400"
+              
             >
               Save Invoice
             </button>

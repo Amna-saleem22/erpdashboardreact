@@ -1,8 +1,8 @@
 // src/App.jsx
 import React, { useState } from 'react';
 import Sidebar from './components/dashboard/Sidebar';
-import Dashboard from '../src/pages/dashboardpage.jsx';
-import InvoicesPage from '../src/pages/invoicetablepage.jsx'; // Ya phir direct InvoiceTable agar aapne page nahi banaya
+import Dashboard from '../src/components/erp/dashboardpage.jsx';
+import InvoicesPage from './components/erp/InvoiceTable.jsx'; // Ya phir direct InvoiceTable agar aapne page nahi banaya
 
 function App() {
   // State to switch between main views
