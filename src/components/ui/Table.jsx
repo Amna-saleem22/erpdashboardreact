@@ -1,4 +1,3 @@
-import React from 'react';
 import { theme } from '../../theme/token';
 
 export const Table = ({ children, className = '' }) => (
@@ -9,12 +8,12 @@ export const Table = ({ children, className = '' }) => (
   </div>
 );
 
-export const Th = ({ children, className = '' }) => (
-  <th className={`${theme.elements.table.th} ${className}`}>{children}</th>
+export const Th = ({ children, className = '', align = 'left' }) => (
+  <th className={`${theme.elements.table.th} ${align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'} ${className}`}>{children}</th>
 );
 
-export const Td = ({ children, isMono = true, className = '' }) => (
-  <td className={`${isMono ? theme.elements.table.td : theme.elements.table.tdText} ${className}`}>
+export const Td = ({ children, isMono = true, className = '', align = 'left', colSpan }) => (
+  <td colSpan={colSpan} className={`${isMono ? theme.elements.table.td : theme.elements.table.tdText} ${align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'} ${className}`}>
     {children}
   </td>
 );

@@ -1,7 +1,9 @@
 // print 
 
 // src/components/erp/InvoicePrint.jsx
-import React from 'react';
+import { Printer, X } from 'lucide-react';
+import { Badge, Button } from '../ui/Index';
+import { theme } from '../../theme/token';
 
 const InvoicePrint = ({ invoice, onClose }) => {
   if (!invoice) return null;
@@ -11,56 +13,52 @@ const InvoicePrint = ({ invoice, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
+    <div className={`${theme.elements.modal.overlay} items-start`}>
       {/* Container */}
-      <div className="w-full max-w-2xl bg-white text-slate-900 rounded-xl shadow-2xl p-8 relative print:p-0 print:shadow-none print:w-full">
+      <div className="relative w-full max-w-2xl rounded-xl border border-stone-200 bg-white p-6 text-slate-900 shadow-xl print:w-full print:border-0 print:p-0 print:shadow-none md:p-8">
         {/* Non-Printable Header Toolbar */}
-        <div className="flex justify-between items-center mb-6 border-b pb-4 print:hidden">
-          <h2 className="text-lg font-bold text-slate-800">Invoice Preview</h2>
+        <div className="mb-6 flex items-center justify-between border-b border-stone-200 pb-4 print:hidden">
+          <h2 className="font-heading text-base font-semibold text-slate-900">Invoice Preview</h2>
           <div className="flex gap-2">
-            <button
-              onClick={handlePrint}
-              className="px-4 py-2 bg-amber-500 text-slate-950 font-bold text-xs rounded-lg hover:bg-amber-400"
-            >
-              🖨️ Print / Save PDF
-            </button>
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-300"
-            >
+            <Button variant="primary" onClick={handlePrint}>
+              <Printer className="h-3.5 w-3.5" />
+              Print / Save PDF
+            </Button>
+            <Button variant="secondary" onClick={onClose} aria-label="Close invoice preview">
+              <X className="h-3.5 w-3.5" />
               Close
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Printable Area */}
         <div id="printable-invoice" className="font-sans">
           {/* Invoice Header */}
-          <div className="flex justify-between items-start border-b pb-6">
+          <div className="flex items-start justify-between border-b border-stone-200 pb-6">
             <div>
-              <h1 className="text-2xl font-black tracking-wide text-slate-900">ERP ENTERPRISE</h1>
-              <p className="text-xs text-slate-500 mt-1">Commercial Billing & ERP Solution</p>
+              <h1 className="font-heading text-xl font-semibold tracking-tight text-slate-950">ERP ENTERPRISE</h1>
+              <p className="mt-1 text-xs text-slate-500">Commercial Billing & ERP Solution</p>
             </div>
             <div className="text-right">
-              <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded uppercase mb-2">
+              <Badge variant="warning" className="mb-2">
                 {invoice.type} INVOICE
-              </span>
-              <p className="text-sm font-bold text-slate-800">#{invoice.invoiceNo}</p>
+              </Badge>
+              <p className="text-sm font-semibold text-slate-800">#{invoice.invoiceNo}</p>
               <p className="text-xs text-slate-500">Date: {invoice.date}</p>
             </div>
           </div>
 
           {/* Bill To Info */}
           <div className="my-6">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Billed To:</p>
-            <h3 className="text-lg font-bold text-slate-800">{invoice.partyName}</h3>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Billed To:</p>
+            <h3 className="text-base font-semibold text-slate-800">{invoice.partyName}</h3>
             <p className="text-xs text-slate-500">Payment Status: <strong className="text-slate-800">{invoice.paymentStatus}</strong></p>
           </div>
 
           {/* Invoice Table */}
-          <table className="w-full text-left text-xs my-6 border-collapse">
+          <table className="my-6 w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="bg-slate-100 border-b border-t border-slate-200">
+              <tr className="border-b border-t border-stone-200 bg-stone-50">
                 <th className="py-2 px-3">Description</th>
                 <th className="py-2 px-3 text-right">Subtotal</th>
                 <th className="py-2 px-3 text-right">Tax (18%)</th>
@@ -68,35 +66,35 @@ const InvoicePrint = ({ invoice, onClose }) => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-stone-100">
                 <td className="py-3 px-3 font-medium">Standard ERP Transaction ({invoice.type})</td>
-                <td className="py-3 px-3 text-right">${invoice.subtotal.toLocaleString()}</td>
-                <td className="py-3 px-3 text-right">${invoice.taxAmount.toLocaleString()}</td>
-                <td className="py-3 px-3 text-right font-bold">${invoice.totalAmount.toLocaleString()}</td>
+                <td className="px-3 py-3 text-right">Rs. {invoice.subtotal.toLocaleString()}</td>
+                <td className="px-3 py-3 text-right">Rs. {invoice.taxAmount.toLocaleString()}</td>
+                <td className="px-3 py-3 text-right font-semibold">Rs. {invoice.totalAmount.toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
 
           {/* Total Calculation Summary */}
-          <div className="flex justify-end mt-6">
-            <div className="w-1/2 space-y-2 text-xs">
+          <div className="mt-6 flex justify-end">
+            <div className="w-full max-w-xs space-y-2 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal:</span>
-                <span>${invoice.subtotal.toLocaleString()}</span>
+                <span>Rs. {invoice.subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Tax (18%):</span>
-                <span>${invoice.taxAmount.toLocaleString()}</span>
+                <span>Rs. {invoice.taxAmount.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between border-t pt-2 font-bold text-sm text-slate-900">
+              <div className="flex justify-between border-t border-stone-200 pt-2 text-sm font-semibold text-slate-900">
                 <span>Total Amount:</span>
-                <span className="text-amber-600">${invoice.totalAmount.toLocaleString()}</span>
+                <span>Rs. {invoice.totalAmount.toLocaleString()}</span>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="border-t pt-6 mt-8 text-center text-xs text-slate-400">
+          <div className="mt-8 border-t border-stone-200 pt-6 text-center text-xs text-slate-400">
             <p>Thank you for your business!</p>
             <p className="text-[10px] mt-1">This is a system generated document.</p>
           </div>

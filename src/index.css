@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+	color: #0f172a;
+	background: #fafaf9;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	--chart-revenue: #0f766e;
+	--chart-expenses: #64748b;
+	--chart-profit: #d97706;
+	--chart-grid: #e7e5e4;
+	--chart-axis: #78716c;
+	--chart-tooltip: #172033;
+}
+
+html {
+	background: #fafaf9;
+}
+
+html.dark {
+	background: #020617;
+	--chart-revenue: #2dd4bf;
+	--chart-expenses: #94a3b8;
+	--chart-profit: #fbbf24;
+	--chart-grid: #334155;
+	--chart-axis: #94a3b8;
+	--chart-tooltip: #0f172a;
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+}
+
+button,
+input,
+select {
+	font: inherit;
+}

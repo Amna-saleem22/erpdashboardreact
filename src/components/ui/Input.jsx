@@ -1,4 +1,3 @@
-import React from 'react';
 import { theme } from '../../theme/token';
 
 const Input = ({ label, error, isMono = false, className = '', ...props }) => {

@@ -1,314 +1,245 @@
 // src/components/erp/InvoiceTable.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Printer, RotateCcw, Search } from 'lucide-react';
 import { mockData } from '../../data/generateErpData';
 import { useTableFilter } from '../hook/useTableFilter';
 import InvoiceModalForm from './InvoiceFormModal';
 import InvoicePrint from './InvoicePrint';
 
-// Import Shared Design System Atomic UI Tokens
-import { 
-  Heading, 
-  Text, 
-  Button, 
-  Card, 
-  Table, 
-  Th, 
-  Td, 
-  Tr, 
-  Badge, 
-  Input, 
-  Select 
+import {
+  Heading, Text, Button, Card, Table, Th, Td, Tr, Badge, Input, Select
 } from '../ui/Index';
 
 const InvoiceTable = () => {
-  // ==========================================
-  // 1. MODAL STATES (Form & Print Views)
-  // ==========================================
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedInvoiceForPrint, setSelectedInvoiceForPrint] = useState(null);
-
-  // ==========================================
-  // 2. PAGINATION STATE
-  // ==========================================
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 15;
+  const rowsPerPage = 10;
 
-  // ==========================================
-  // 3. FILTER HOOK INTEGRATION
-  // ==========================================
   const {
-    filteredData,
-    searchTerm,
-    setSearchTerm,
-    activeTab,
-    setActiveTab,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    statusFilter,
-    setStatusFilter,
-    resetFilters
+    filteredData, searchTerm, setSearchTerm, activeTab, setActiveTab,
+    startDate, setStartDate, endDate, setEndDate, statusFilter, setStatusFilter, resetFilters
   } = useTableFilter(mockData);
 
-  // ==========================================
-  // 4. PAGINATION CALCULATIONS
-  // ==========================================
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
 
-  // Handler: Form Submission
+  const formatDate = (date) => new Date(date).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+
   const handleAddInvoice = (newInvoice) => {
     console.log("New Invoice Created:", newInvoice);
     setIsFormOpen(false);
   };
 
   return (
-    <div className="p-4 md:p-6 bg-slate-50 min-h-screen font-sans space-y-6">
-      
-      {/* ========================================================= */}
-      /* HEADER SECTION: Title, Description & Action Buttons       */
-      {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <Card className="space-y-5 p-5 md:p-6">
+      {/* HEADER & TABS */}
+      <div className="flex flex-col gap-4 border-b border-stone-100 pb-1 md:flex-row md:items-center md:justify-between dark:border-slate-800">
         <div>
-          <Heading level="h1">Invoice Management</Heading>
-          <Text variant="sm" className="text-slate-500 mt-1">
-            View, search, filter, and manage Purchase and Sale book registers.
+          <Heading level="h3">Transaction Records</Heading>
+          <Text variant="sm" className="text-slate-500 dark:text-slate-400 mt-0.5">
+            Audit trail for Purchase and Sale register transactions.
           </Text>
         </div>
 
-        {/* Primary Action Button */}
-        <div className="flex items-center gap-3">
-          <Button 
-            variant="primary" 
-            onClick={() => setIsFormOpen(true)}
-          >
-            + Create Invoice
-          </Button>
-        </div>
-      </div>
-
-      {/* ========================================================= */}
-      /* MAIN CONTENT CARD: Contains Filters, Tabs, & Table        */
-      {/* ========================================================= */}
-      <Card className="bg-white border-slate-200/80 p-5 shadow-xs space-y-4">
-        
-        {/* ------------------------------------------------------- */}
-        {/* INLINE FILTER BAR SECTION (Merged from FilterBar)       */}
-        {/* ------------------------------------------------------- */}
-        <div className="flex flex-wrap gap-4 items-end bg-slate-50 p-4 rounded-xl border border-slate-200/80">
-          
-          {/* Filter 1: Search Bar */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block text-xs font-medium text-slate-600 mb-1">Search</label>
-            <Input
-              type="text"
-              placeholder="Invoice No / Party Name..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1); // Filter change par page 1 par reset karein
-              }}
-            />
-          </div>
-
-          {/* Filter 2: Payment Status Dropdown */}
-          <div className="w-full sm:w-auto min-w-[140px]">
-            <label className="block text-xs font-medium text-slate-600 mb-1">Status</label>
-            <Select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-            >
-              <option value="ALL">All Status</option>
-              <option value="Paid">Paid</option>
-              <option value="Partial">Partial</option>
-              <option value="Unpaid">Unpaid</option>
-            </Select>
-          </div>
-
-          {/* Filter 3: Start Date */}
-          <div className="w-full sm:w-auto">
-            <label className="block text-xs font-medium text-slate-600 mb-1">From Date</label>
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-
-          {/* Filter 4: End Date */}
-          <div className="w-full sm:w-auto">
-            <label className="block text-xs font-medium text-slate-600 mb-1">To Date</label>
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-
-          {/* Filter 5: Reset Button */}
-          <div>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                resetFilters();
-                setCurrentPage(1);
-              }}
-            >
-              Reset
-            </Button>
-          </div>
-        </div>
-
-        {/* ------------------------------------------------------- */}
-        {/* TAB NAVIGATION: All / Purchase Book / Sale Book         */}
-        {/* ------------------------------------------------------- */}
-        <div className="flex gap-2 border-b border-slate-200 pb-2">
+        <div className="flex self-start gap-1 rounded-lg border border-stone-200 bg-stone-100/80 p-1 dark:border-slate-700 dark:bg-slate-800 md:self-auto">
           {['ALL', 'PURCHASE', 'SALE'].map((tab) => (
-            <Button
+          <Button
               key={tab}
               variant={activeTab === tab ? 'primary' : 'secondary'}
-              size="sm"
+              className="px-3 py-2 text-[11px]"
               onClick={() => {
                 setActiveTab(tab);
                 setCurrentPage(1);
               }}
             >
-              {tab === 'ALL' ? 'All Records' : tab === 'PURCHASE' ? 'Purchase Book' : 'Sale Book'}
+              {tab === 'ALL' ? 'All Books' : tab === 'PURCHASE' ? 'Purchase Book' : 'Sale Book'}
             </Button>
           ))}
         </div>
+      </div>
 
-        {/* ------------------------------------------------------- */}
-        {/* DATA TABLE SECTION                                     */}
-        {/* ------------------------------------------------------- */}
-        <Table>
-          <thead>
-            <Tr header>
-              <Th>Type</Th>
-              <Th>Invoice No</Th>
-              <Th>Date</Th>
-              <Th>Party Name</Th>
-              <Th align="right">Subtotal</Th>
-              <Th align="right">Tax (18%)</Th>
-              <Th align="right">Total Amount</Th>
-              <Th align="center">Status</Th>
-              <Th align="center">Action</Th>
-            </Tr>
-          </thead>
-          <tbody>
-            {currentRows.length > 0 ? (
-              currentRows.map((row) => (
-                <Tr key={row.id}>
-                  {/* Register Type Tag */}
-                  <Td>
-                    <Badge variant={row.type === 'PURCHASE' ? 'info' : 'success'}>
-                      {row.type}
-                    </Badge>
-                  </Td>
-
-                  {/* Invoice Code */}
-                  <Td isMono className="font-medium text-slate-900">
-                    {row.invoiceNo}
-                  </Td>
-
-                  {/* Date */}
-                  <Td isMono={false}>{row.date}</Td>
-
-                  {/* Party Name */}
-                  <Td isMono={false} className="font-medium text-slate-800">
-                    {row.partyName}
-                  </Td>
-
-                  {/* Financial Metrics */}
-                  <Td align="right">${row.subtotal.toLocaleString()}</Td>
-                  <Td align="right">${row.taxAmount.toLocaleString()}</Td>
-                  <Td align="right" className="font-semibold text-slate-900">
-                    ${row.totalAmount.toLocaleString()}
-                  </Td>
-
-                  {/* Payment Status Badge */}
-                  <Td align="center">
-                    <Badge 
-                      variant={
-                        row.paymentStatus === 'Paid' ? 'success' :
-                        row.paymentStatus === 'Partial' ? 'warning' : 'danger'
-                      }
-                    >
-                      {row.paymentStatus}
-                    </Badge>
-                  </Td>
-
-                  {/* Actions */}
-                  <Td align="center">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedInvoiceForPrint(row)}
-                    >
-                      Print
-                    </Button>
-                  </Td>
-                </Tr>
-              ))
-            ) : (
-              /* Empty State */
-              <Tr>
-                <Td colSpan="9" align="center" className="py-8 text-slate-400">
-                  No records found matching the active filters.
-                </Td>
-              </Tr>
-            )}
-          </tbody>
-        </Table>
-
-        {/* ------------------------------------------------------- */}
-        {/* TABLE PAGINATION FOOTER                                 */}
-        {/* ------------------------------------------------------- */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pt-2">
-          <div>
-            Showing {filteredData.length > 0 ? indexOfFirstRow + 1 : 0} to {Math.min(indexOfLastRow, filteredData.length)} of {filteredData.length} records
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
-            <span className="px-3 py-1 bg-slate-100 text-slate-800 rounded-lg font-semibold">
-              {currentPage} / {totalPages || 1}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages || totalPages === 0}
-            >
-              Next
-            </Button>
+      {/* FILTER BAR SECTION */}
+      <div className="grid grid-cols-1 items-end gap-3 rounded-lg border border-stone-200/80 bg-stone-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40 sm:grid-cols-2 lg:grid-cols-12">
+        <div className="lg:col-span-4">
+          <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">Search records</label>
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Input
+              className="pl-9"
+              type="text"
+              placeholder="Invoice code or party name..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         </div>
-      </Card>
 
-      {/* ========================================================= */}
-      /* MODAL RENDERING (Invoice Form & Invoice Print View)       */
-      {/* ========================================================= */}
-      
-      {/* Create Invoice Modal */}
+        <div className="lg:col-span-2">
+          <Select
+            label="Payment status"
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Partial">Partial</option>
+            <option value="Unpaid">Unpaid</option>
+          </Select>
+        </div>
+
+        <div className="lg:col-span-2">
+          <Input
+            label="From Date"
+            type="date"
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
+        <div className="lg:col-span-2">
+          <Input
+            label="To Date"
+            type="date"
+            value={endDate}
+            onChange={(e) => {
+              setEndDate(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
+        <div className="lg:col-span-2 flex gap-2">
+            <Button
+            variant="secondary"
+            className="w-full"
+            onClick={() => {
+              resetFilters();
+              setCurrentPage(1);
+            }}
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset filters
+          </Button>
+        </div>
+      </div>
+
+      {/* DATA TABLE */}
+      <Table>
+        <thead>
+          <Tr header>
+            <Th>Type</Th>
+            <Th>Invoice Code</Th>
+            <Th>Date</Th>
+            <Th>Party Name</Th>
+            <Th align="right">Subtotal</Th>
+            <Th align="right">Tax</Th>
+            <Th align="right">Total Amount</Th>
+            <Th align="center">Status</Th>
+            <Th align="center">Action</Th>
+          </Tr>
+        </thead>
+        <tbody>
+          {currentRows.length > 0 ? (
+            currentRows.map((row) => (
+              <Tr key={row.id}>
+                <Td>
+                  <Badge variant={row.type === 'PURCHASE' ? 'info' : 'success'}>
+                    {row.type}
+                  </Badge>
+                </Td>
+                <Td isMono className="font-semibold text-slate-900 dark:text-slate-100">
+                  {row.invoiceNo}
+                </Td>
+                <Td isMono={false}>{formatDate(row.date)}</Td>
+                <Td isMono={false} className="font-medium text-slate-800 dark:text-slate-200">
+                  {row.partyName}
+                </Td>
+                <Td align="right">Rs. {row.subtotal.toLocaleString()}</Td>
+                <Td align="right">Rs. {row.taxAmount.toLocaleString()}</Td>
+                <Td align="right" className="font-bold text-slate-900 dark:text-slate-100">
+                  Rs. {row.totalAmount.toLocaleString()}
+                </Td>
+                <Td align="center">
+                  {(() => {
+                    const paymentStatus = String(row.paymentStatus || 'Unknown');
+                    const statusVariant = paymentStatus === 'Paid'
+                      ? 'success'
+                      : paymentStatus === 'Partial'
+                        ? 'warning'
+                        : paymentStatus === 'Unpaid'
+                          ? 'danger'
+                          : 'neutral';
+
+                    return (
+                      <Badge variant={statusVariant} className="min-w-[68px] justify-center">
+                        {paymentStatus}
+                      </Badge>
+                    );
+                  })()}
+                </Td>
+                <Td align="center">
+                  <Button
+                    variant="outline"
+                    onClick={() => setSelectedInvoiceForPrint(row)}
+                  >
+                    <Printer className="h-3.5 w-3.5" />
+                    <span className="sr-only">Print invoice</span>
+                  </Button>
+                </Td>
+              </Tr>
+            ))
+          ) : (
+            <Tr>
+              <Td colSpan="9" align="center" className="py-8 text-slate-400">
+                No matching financial records found.
+              </Td>
+            </Tr>
+          )}
+        </tbody>
+      </Table>
+
+      {/* PAGINATION FOOTER */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div>
+          Showing {filteredData.length > 0 ? indexOfFirstRow + 1 : 0} to {Math.min(indexOfLastRow, filteredData.length)} of {filteredData.length} records
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <span className="rounded-lg bg-stone-100 px-3 py-1 font-semibold text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+            {currentPage} / {totalPages || 1}
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages || totalPages === 0}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+
       {isFormOpen && (
         <InvoiceModalForm
           isOpen={isFormOpen}
@@ -317,14 +248,13 @@ const InvoiceTable = () => {
         />
       )}
 
-      {/* Printable Invoice Modal */}
       {selectedInvoiceForPrint && (
         <InvoicePrint
           invoice={selectedInvoiceForPrint}
           onClose={() => setSelectedInvoiceForPrint(null)}
         />
       )}
-    </div>
+    </Card>
   );
 };
 

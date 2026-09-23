@@ -1,5 +1,5 @@
 // src/components/dashboard/FilterBar.jsx
-import React from 'react';
+import { Button, Input, Select } from '../ui/Index';
 
 const FilterBar = ({
   searchTerm,
@@ -19,77 +19,56 @@ const FilterBar = ({
   };
 
   return (
-    <div className="flex flex-wrap gap-4 items-center mb-6 bg-slate-800/60 p-4 rounded-xl border border-slate-700/60">
+    <div className="mb-6 flex flex-wrap items-end gap-3 rounded-lg border border-stone-200/80 bg-stone-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
       {/* Search Input */}
-      <div>
-        <label className="block text-xs text-slate-400 mb-1">Search</label>
-        <input
-          type="text"
-          placeholder="Invoice No / Party Name..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded text-sm text-white focus:outline-none focus:border-amber-400"
-        />
+      <div className="min-w-[220px] flex-1">
+        <Input label="Search" type="text" placeholder="Invoice No / Party Name..." value={searchTerm} onChange={handleSearchChange} />
       </div>
 
       {/* Payment Status Dropdown */}
-      <div>
-        <label className="block text-xs text-slate-400 mb-1">Status</label>
-        <select
+      <div className="min-w-[150px]">
+        <Select
+          label="Status"
           value={statusFilter}
           onChange={(e) => {
             setStatusFilter(e.target.value);
             if (onFilterChange) onFilterChange();
           }}
-          className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded text-sm text-white focus:outline-none focus:border-amber-400"
         >
           <option value="ALL">All Status</option>
           <option value="Paid">Paid</option>
           <option value="Partial">Partial</option>
           <option value="Unpaid">Unpaid</option>
-        </select>
+        </Select>
       </div>
 
       {/* Start Date */}
-      <div>
-        <label className="block text-xs text-slate-400 mb-1">From Date</label>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => {
+      <div className="min-w-[150px]">
+        <Input label="From Date" type="date" value={startDate} onChange={(e) => {
             setStartDate(e.target.value);
             if (onFilterChange) onFilterChange();
-          }}
-          className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded text-sm text-white focus:outline-none focus:border-amber-400"
-        />
+          }} />
       </div>
 
       {/* End Date */}
-      <div>
-        <label className="block text-xs text-slate-400 mb-1">To Date</label>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => {
+      <div className="min-w-[150px]">
+        <Input label="To Date" type="date" value={endDate} onChange={(e) => {
             setEndDate(e.target.value);
             if (onFilterChange) onFilterChange();
-          }}
-          className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded text-sm text-white focus:outline-none focus:border-amber-400"
-        />
+          }} />
       </div>
 
       {/* Reset Button */}
-      <div className="self-end">
-        <button
-          type="button"
+      <div>
+        <Button
+          variant="secondary"
           onClick={() => {
             resetFilters();
             if (onFilterChange) onFilterChange();
           }}
-          className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium rounded transition-colors"
         >
           Reset
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import React from 'react';
 import { theme } from '../../theme/token';
 
 const Card = ({ children, className = '' }) => {

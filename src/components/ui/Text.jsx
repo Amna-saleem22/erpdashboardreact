@@ -1,4 +1,3 @@
-import React from 'react';
 import { theme } from '../../theme/token';
 
 const Text = ({ variant = 'body', color = 'secondary', children, className = '' }) => {

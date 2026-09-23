@@ -69,8 +69,6 @@ export const generateErpBookData = (totalRows = 400) => {
       paidAmount = totalAmount;
     } else if (paymentStatus === 'Partial') {
       paidAmount = Math.round(totalAmount * 0.4);
-    } else {
-      paidAmount = 0;
     }
     const dueAmount = totalAmount - paidAmount;
 
