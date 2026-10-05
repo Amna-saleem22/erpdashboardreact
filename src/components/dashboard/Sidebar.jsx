@@ -7,9 +7,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'invoices',  label: 'Purchase & Sale Book', icon: BookOpen },
-  ];
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },  ];
 
   return (
     <aside
